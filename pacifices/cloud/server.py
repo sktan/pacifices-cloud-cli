@@ -68,13 +68,13 @@ class server():
         headers=headers,
         data=data
       )
-    elif http_type == "POST":
-      response = requests.post(
+    elif http_type == "PUT":
+      response = requests.put(
         endpoint,
         headers=headers,
         data=data
       )
-    elif http_type == "GET":
+    elif http_type == "DELETE":
       response = requests.delete(
         endpoint,
         headers=headers
@@ -112,6 +112,7 @@ class server():
         }
       }
     """
+    # Generate a random 16 character RCON password if none specified
     if not rcon_password:
       rcon_password = secrets.token_urlsafe(16)
     creation_data = {
@@ -129,6 +130,7 @@ class server():
         "city": location
       }
     }
+    # Setup a password if one is included
     if password:
       creation_data['password'] = {
         "enabled": True,
@@ -143,7 +145,20 @@ class server():
     raise NotImplementedError
 
   def destroy(self, server_id: str) -> dict:
-    raise NotImplementedError
+    """Destroy a CSGO server
+    
+    Args:
+      server_id (str): The PacificES Cloud serverid to destroy
+
+    Returns: A JSON response converted into dictionary form from the API indicating a success or failure
+      dict:
+      {
+        "success": true,
+        "error": false,
+        "result": null
+      }
+    """
+    return self.__api_request(route="servers/{:s}".format(server_id), http_type="DELETE")
 
   def update(self, server_id: str) -> dict:
     raise NotImplementedError
