@@ -26,5 +26,5 @@ pip3 install pacifices-cloud
 
 Usage of this tool can be done in multiple ways, either via CLI or via the library. Instructions for both can be found in the links below:
 
-[CLI Usage](docs/cli.md)
-[LIB usage](docs/cli.md)
+- [CLI Usage](docs/cli.md)
+- [LIB usage](docs/cli.md)

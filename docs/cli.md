@@ -21,7 +21,11 @@ PACIFICES_API_KEY="my_pacifices_cloud_api_key"
 Creating a de_dust2 server with warmod pre-installed
 
 ```
+# Single Plugin
 pacifices-cloud create --map de_dust2 --plugin warmod
+
+# Multi Plugin
+pacifices-cloud create --map de_dust2 --plugin warmod --plugin nadetails
 ```
 
 Creating a de_dust2 server with warmod pre-installed (with pre-configured RCON and server join passwords)
