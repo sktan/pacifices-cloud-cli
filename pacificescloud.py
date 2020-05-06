@@ -18,8 +18,9 @@ def parse_args():
     A command line interface for managing your https://pacifices.cloud/ servers
 
     Example usage:
-    pacificescloud create --name mycsgoserver --map de_dust2 --plugin warmod
-    pacificescloud destroy --serverid abcdefgh
+    pacifices-cloud create --name mycsgoserver --map de_dust2 --plugin warmod
+    pacifices-cloud destroy --serverid abcdefgh
+    pacifices-cloud list --serverid abcd-efgh-ikl --serverid abcd-efgh-mnop
     ------------------------
     https://github.com/sktan/pacifices-cloud-cli
     """
@@ -56,6 +57,10 @@ def parse_args():
   update_parser = subparser.add_parser('update', help='Update a CSGO server')
   update_parser.add_argument('--serverid', help='ServerId of your PacificES Cloud server', required=True)
 
+  # Sub parser for listing CSGO servers
+  update_parser = subparser.add_parser('list', help='Lists your CSGO server')
+  update_parser.add_argument('--serverid', help='ServerId of your PacificES Cloud server', type=str, action='append')
+
   args = parser.parse_args()
   if not args.action:
     parser.print_help()
@@ -87,6 +92,8 @@ def main():
     result = cloudserver.destroy(server_id=args.serverid)
   elif args.action == 'update':
     result = cloudserver.update(server_id=args.serverid)
+  elif args.action == "list":
+    result = cloudserver.retrieve(server_ids=args.serverid)
   print(json.dumps(result, indent=2))
 
 if __name__ == "__main__":

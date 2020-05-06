@@ -142,7 +142,47 @@ class server():
     server_ids: typing.Optional[list],
     status: str="running"
   ) -> list:
-    raise NotImplementedError
+    r"""Retrieve a list of CSGO servers
+
+    Args:
+      server_ids (list, optional): A specific list of CSGO servers we want to retrieve (empty = all)
+      status (str): The status of the servers we want to retrieve
+
+    Returns:
+      dict: A JSON response converted into dictionary form from the API indicating a success or failure
+      {
+        "success": true,
+        "error": false,
+        "result": [
+          {
+            "id": "abcd-efgh-ijkl",
+            "name": "MyTestServer",
+            "map": {
+              "group": "mg_active",
+              "id": "de_cache",
+              "name": "de_cache",
+              "type": "default"
+            },
+            "cost": 95,
+            "created": 1486386447,
+        ....
+      }
+    """
+    data = {
+      "status": status
+    }
+    results = self.__api_request("servers", data=data)
+    if server_ids:
+      filtered_results = {
+        "success": results['success'],
+        "error": results['error'],
+        "result": []
+      }
+      for result in results['result']:
+        if result['id'] in server_ids:
+          filtered_results['result'].append(result)
+      results = filtered_results
+    return results
 
   def destroy(self, server_id: str) -> dict:
     """Destroy a CSGO server
