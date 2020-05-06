@@ -26,7 +26,7 @@ class server():
 
     Args:
       route (str): The route of the action we are looking to perform e.g. servers
-    
+
     Returns:
       str: A fully built URI e.g. https://api.pacifices.cloud/v1/servers
     """
@@ -39,10 +39,10 @@ class server():
       route      (str): The route of the action we are looking to perform e.g. servers
       data      (dict): The data sent with the the API request
       http_type  (str): The type of HTTP request to send (GET, POST, DELETE, PUT)
-    
+
     Returns:
       dict: Data returned from the API consisting of the JSON response
-    
+
     Examples:
       >>> self.__api_request("servers/abcd-efgh-ijkl", http_type: "DELETE")
       {
@@ -101,7 +101,7 @@ class server():
       map (str): CSGO server map (e.g. de_dust2)
       plugins (str): CSGO plugins to include (e.g. Warmod, nadetails)
       tickrate (int): CSGO server tickrate (128, 64)
-    
+
     Returns:
       dict: A JSON response converted into dictionary form from the API indicating a success or failure
       {
@@ -146,7 +146,7 @@ class server():
 
   def destroy(self, server_id: str) -> dict:
     """Destroy a CSGO server
-    
+
     Args:
       server_id (str): The PacificES Cloud serverid to destroy
 
@@ -162,7 +162,7 @@ class server():
 
   def update(self, server_id: str) -> dict:
     """Update a CSGO server to the latest version
-    
+
     Args:
       server_id (str): The PacificES Cloud serverid to update
 
@@ -178,7 +178,7 @@ class server():
 
   def restart(self, server_id: str) -> dict:
     """Restart a CSGO server
-    
+
     Args:
       server_id (str): The PacificES Cloud serverid to restart
 
@@ -193,7 +193,42 @@ class server():
     return self.__api_request(route="servers/{:s}/restart".format(server_id), http_type="POST")
 
   def send_command(self, server_id: str, command: str) -> dict:
-    raise NotImplementedError
+    """Sends a RCON command to the CSGO server
+    
+    Args:
+      server_id (str): The PacificES Cloud serverid to receive command
+      command (str): A command to send
+
+    Returns:
+      dict: A JSON response converted into dictionary form from the API indicating a success or failure
+      {
+        "success": true,
+        "error": false,
+        "result": null
+      }
+    """
+    return self.__api_request(
+      route="servers/{:s}/command".format(server_id),
+      data=json.dumps(
+        {
+          "command": command
+        }
+      ),
+      http_type="POST"
+    )
 
   def version(self, server_id: str) -> dict:
-    raise NotImplementedError
+    """Retrieve the current running version of the given CSGO server
+
+    Args:
+      server_id (str): The PacificES Cloud serverid to check version
+
+    Returns:
+      dict: A JSON response converted into dictionary form from the API with a CSGO server version
+      {
+        "server_version": "1.35.6.6",
+        "node_version": "1.35.6.6",
+        "server_out_of_date": false
+      }
+    """
+    return self.__api_request(route="servers/{:s}/version".format(server_id))
