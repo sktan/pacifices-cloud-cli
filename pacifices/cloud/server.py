@@ -150,8 +150,8 @@ class server():
     Args:
       server_id (str): The PacificES Cloud serverid to destroy
 
-    Returns: A JSON response converted into dictionary form from the API indicating a success or failure
-      dict:
+    Returns:
+      dict: A JSON response converted into dictionary form from the API indicating a success or failure
       {
         "success": true,
         "error": false,
@@ -161,10 +161,36 @@ class server():
     return self.__api_request(route="servers/{:s}".format(server_id), http_type="DELETE")
 
   def update(self, server_id: str) -> dict:
-    raise NotImplementedError
+    """Update a CSGO server to the latest version
+    
+    Args:
+      server_id (str): The PacificES Cloud serverid to update
+
+    Returns:
+      dict: A JSON response converted into dictionary form from the API indicating a success or failure
+      {
+        "success": true,
+        "error": false,
+        "result": null
+      }
+    """
+    return self.__api_request(route="servers/{:s}/update".format(server_id), http_type="POST")
 
   def restart(self, server_id: str) -> dict:
-    raise NotImplementedError
+    """Restart a CSGO server
+    
+    Args:
+      server_id (str): The PacificES Cloud serverid to restart
+
+    Returns:
+      dict: A JSON response converted into dictionary form from the API indicating a success or failure
+      {
+        "success": true,
+        "error": false,
+        "result": null
+      }
+    """
+    return self.__api_request(route="servers/{:s}/restart".format(server_id), http_type="POST")
 
   def send_command(self, server_id: str, command: str) -> dict:
     raise NotImplementedError
