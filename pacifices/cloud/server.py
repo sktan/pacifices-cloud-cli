@@ -2,11 +2,11 @@
 A class to handle management of https://pacifices.cloud servers
 """
 import typing
-import requests
+import secrets
 import json
-import urllib
+import requests
 
-class server(object):
+class server():
   """ A class to handle management of https://pacifices.cloud servers """
   __api_key = None
   __api_url_base = "https://api.pacifices.cloud/v1/"
@@ -53,15 +53,14 @@ class server(object):
     """
     endpoint = self.__api_endpoint(route)
     headers = {
-      'Authorization': self.__api_key
+      "Authorization": self.__api_key,
+      "Content-Type": "application/json"
     }
     if http_type == "GET":
-      if data:
-        request_params = urllib.parse.urlencode(data)
-        endpoint = "{:s}?{:s}".format(endpoint, request_params)
       response = requests.get(
         endpoint,
-        headers=headers
+        headers=headers,
+        params=data
       )
     elif http_type == "POST":
       response = requests.post(
@@ -85,13 +84,57 @@ class server(object):
   def create(self, name: str,
     password: typing.Optional[str]=None,
     rcon_password: typing.Optional[str]=None,
-    gamemode: str="Competitive",
+    gamemode: str="competitive",
     location: str="Sydney",
     map: str="de_dust2",
     plugins: list=["warmod"],
     tickrate: int=128,
   ):
-    raise NotImplementedError
+    r"""Create a PacificES Cloud server
+
+    Args:
+      name (str): The name of the game server
+      password (str, optional): A server join password
+      rcon_password (str, optional): A server RCON password (if unspecified, a random 16 character one will be generated)
+      gamemode (str): The Gamemode to start our server in
+      location (str): Location of the CSGO server (Currently only supports Sydney)
+      map (str): CSGO server map (e.g. de_dust2)
+      plugins (str): CSGO plugins to include (e.g. Warmod, nadetails)
+      tickrate (int): CSGO server tickrate (128, 64)
+    
+    Returns:
+      dict: A JSON response converted into dictionary form from the API indicating a success or failure
+      {
+        "success": true,
+        "error": false,
+        "result": {
+          "id": "abcd-efgh-ijkl"
+        }
+      }
+    """
+    if not rcon_password:
+      rcon_password = secrets.token_urlsafe(16)
+    creation_data = {
+      "name": name,
+      "gamemode": gamemode,
+      "map": {
+        "type": "default",
+        "id": map,
+        "group": "mg_active"
+      },
+      "rcon": rcon_password,
+      "plugins": plugins,
+      "tickrate": tickrate,
+      "location": {
+        "city": location
+      }
+    }
+    if password:
+      creation_data['password'] = {
+        "enabled": True,
+        "value": password
+      }
+    return self.__api_request(route="servers", data=json.dumps(creation_data), http_type="POST")
 
   def retrieve(self,
     server_ids: typing.Optional[list],

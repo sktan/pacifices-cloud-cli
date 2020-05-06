@@ -6,6 +6,7 @@ import argparse
 import inspect
 import logging
 import os
+import json
 
 from pacifices.cloud import server
 from dotenv import load_dotenv
@@ -79,13 +80,14 @@ def main():
       kwargs['rcon_password'] = args.rcon
     if args.password:
       kwargs['password'] = args.password
-    cloudserver.create(**kwargs)
+    result = cloudserver.create(**kwargs)
   elif args.action == 'restart':
-    cloudserver.restart(server_id=args.serverid)
+    result = cloudserver.restart(server_id=args.serverid)
   elif args.action == 'destroy':
-    cloudserver.destroy(server_id=args.serverid)
+    result = cloudserver.destroy(server_id=args.serverid)
   elif args.action == 'update':
-    cloudserver.update(server_id=args.serverid)
+    result = cloudserver.update(server_id=args.serverid)
+  print(json.dumps(result, indent=2))
 
 if __name__ == "__main__":
   main()
